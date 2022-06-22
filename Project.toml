@@ -1,0 +1,13 @@
+name = "TriangularIndices"
+uuid = "20346346-81a6-4ca6-8795-c363bc8a2966"
+authors = ["Per Rutquist <per.rutquist@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
