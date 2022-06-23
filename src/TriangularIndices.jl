@@ -10,7 +10,7 @@ Indices of a triangular matrix.
 `UpperTriangleIndices(n)` yields iterator of all the (row, column) indices of an upper triangular matrix of side-length `n`.
 (For an upper triangular matrix, `n` only determines the length of the sequence. It is not used in computing indices.)
 
-Side-lengths greater than approximately 100 000 000 may result in inaccurate index calculation.
+`UpperTriangleIndices(A)` where `A` is a square matrix yields an iterator fitting the size of `A`.
 
 Indexing operations involve square roots, so are slightly slower than iteration.
 """
@@ -19,7 +19,10 @@ struct UpperTriangularIndices
     stop::Tuple{Int, Int}
 end
 
+# NOTE, because too (i,j) larger than typemax(Int32) will cause Int64 overflow in k, we could use Int32 for (i,j).
+
 function UpperTriangularIndices(n::Int) 
+    Int===Int32 && n > 65535 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 65535 are currently not supported with 32bit Int."))
     n > 2^30 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 2^30 are currently not supported."))
     UpperTriangularIndices((1,1), (n,n))
 end
@@ -38,14 +41,14 @@ function triu_ij2k(i, j)
 end
 triu_ij2k(t::Tuple{Int, Int}) = triu_ij2k(t...)
 
+# j*(j+1)+2 == 2k implies j == -1/2 ± sqrt(8k - 7)/2
 """
 The `k`:th `(i,j)` index of an upper triangular matrix.
 """
 function triu_k2ij(k::Int)
-    # j*(j+1)+2 == 2k implies j == -1/2 ± sqrt(8k - 7)/2
-    s = k*8-7
+    s = Int64(k)*8-7
     if k > 2^50
-        k > typemax(Int)>>3 && throw(OverflowError("Index calculation resulted in integer overflow."))
+        k > typemax(Int64)>>3 && throw(OverflowError("Index calculation resulted in integer overflow."))
         jm1 = (isqrt(s)-1)>>1
     else
         jm1 = trunc(Int, 0.5*(sqrt(s)-1.0)) # faster than isqrt
