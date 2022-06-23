@@ -33,7 +33,7 @@ useful with macros that partition the iterator, such as `@distributed` from [Dis
 
 For reverse indexing, there is a fast specialization of `findfirst`
 ```julia
-findfirst(==((3,3)), UpperTriangularIndices(10)) # returns 6
+findfirst(==((2,3)), UpperTriangularIndices(3)) # returns 5
 ```
 
-Note: There's currently no implementation of `LowerTriangularIndices`.
+Note: There's currently no corresponding implementation of `LowerTriangularIndices`. If somebody is interested in writing one, the linear-to-cartesian indexing operation could use [this code](https://discourse.julialang.org/t/iterating-over-elements-of-upper-triangular-matrix-but-cartesian-indices-are-needed/65498/3).
