@@ -1,9 +1,11 @@
-# TriangularIndices
+[![Build status](https://github.com/perrutquist/TriangularIndices.jl/workflows/linux-macos-windows/badge.svg)](https://github.com/perrutquist/TriangularIndices.jl/actions)
+
+# TriangularIndices.jl
 
 This small package is intended to help with iterating over the indices of triangular matrices. For example:
 
 ```julia
-using  TriangularIndices
+using TriangularIndices
 
 z = zeros(Int, (3,3))
 for (k, (i,j)) in enumerate(UpperTriangularIndices(z))
