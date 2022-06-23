@@ -25,7 +25,7 @@ end
 
 function UpperTriangularIndices(n::Int) 
     Int===Int32 && n > 65535 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 65535 are currently not supported with 32bit Int."))
-    n > 2^30 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 2^30 are currently not supported."))
+    n > 1073741823 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 1073741823 (2^30-1) are currently not supported."))
     UpperTriangularIndices((1,1), (n,n))
 end
 
@@ -49,7 +49,7 @@ The `k`:th `(i,j)` index of an upper triangular matrix.
 """
 function triu_k2ij(k::Int)
     s = Int64(k)*8-7
-    if k > 2^50
+    if k > 1125899906842623 # 2^50 - 1
         k > typemax(Int64)>>3 && throw(OverflowError("Index calculation resulted in integer overflow."))
         jm1 = Int((isqrt(s)-1)>>1)
     else
