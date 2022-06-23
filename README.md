@@ -31,7 +31,7 @@ for j in 1:size(z,1)
 end
 ```
 which would not require the use of TriangularIndices.jl, and which might even be faster for single-threaded code. However, `UpperTriangularIndices` objects support `length` as well as partitioning using `getindex`, which makes them
-useful with macros that distribute the iterator over threads or processes, such as `@distributed` from [Distributed](https://docs.julialang.org/en/v1/manual/distributed-computing/), `@threads` from [Threads](https://docs.julialang.org/en/v1/manual/multi-threading/), or `@floops` from [FLoops](https://github.com/JuliaFolds/FLoops.jl).
+useful with macros that distribute the iterator over threads or processes, such as `@distributed` from [Distributed](https://docs.julialang.org/en/v1/manual/distributed-computing/), `@threads` from [Threads](https://docs.julialang.org/en/v1/manual/multi-threading/), or `@floop` from [FLoops](https://github.com/JuliaFolds/FLoops.jl).
 
 For reverse indexing, there is a fast specialization of `findfirst`
 ```julia
