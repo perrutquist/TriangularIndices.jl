@@ -6,6 +6,7 @@ using TriangularIndices: triu_ij2k, triu_k2ij
 
 @testset "UpperTriangularIndices" begin
     iter = UpperTriangularIndices(3)
+    @test iter == UpperTriangularIndices(rand(3,3))
     @test first(iter) == (1,1)
     @test last(iter) == (3,3)
     @test iter[3] == (2,2)

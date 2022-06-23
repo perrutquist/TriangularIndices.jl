@@ -24,6 +24,12 @@ function UpperTriangularIndices(n::Int)
     UpperTriangularIndices((1,1), (n,n))
 end
 
+function UpperTriangularIndices(A::AbstractMatrix)
+    Base.has_offset_axes(A) && error("Triangular indices for offset axes have not been implemented.")
+    ==(size(A)...) || error("Triangular indices requires a square matrix.")
+    UpperTriangularIndices(size(A,1))
+end
+
 """
 The index of `(i,j)` in a sufficiently large `UpperTriangleIndices` iterator that starts from `(1,1)`.
 """
