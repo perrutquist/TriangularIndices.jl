@@ -1,4 +1,4 @@
-[![Build status](https://github.com/perrutquist/TriangularIndices.jl/workflows/linux-macos-windows/badge.svg)](https://github.com/perrutquist/TriangularIndices.jl/actions)
+[![Build status](https://github.com/perrutquist/TriangularIndices.jl/workflows/CI/badge.svg)](https://github.com/perrutquist/TriangularIndices.jl/actions)
 
 # TriangularIndices.jl
 
