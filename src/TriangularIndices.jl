@@ -49,7 +49,7 @@ function triu_k2ij(k::Int)
     s = Int64(k)*8-7
     if k > 2^50
         k > typemax(Int64)>>3 && throw(OverflowError("Index calculation resulted in integer overflow."))
-        jm1 = (isqrt(s)-1)>>1
+        jm1 = Int((isqrt(s)-1)>>1)
     else
         jm1 = trunc(Int, 0.5*(sqrt(s)-1.0)) # faster than isqrt
     end
