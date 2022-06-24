@@ -121,7 +121,6 @@ end
 
 SplittablesBase.amount(x::UpperTriangularIndices) = length(x)
 
-# `There should maybe be a default fallback `shape` in SplittablesBase?`
-SplittablesBase.Implementations.shape(x::UpperTriangularIndices) = size(x)
+include("enumerated.jl")
 
 end # module

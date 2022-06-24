@@ -39,3 +39,5 @@ end
     @test all(triu_k2ij(triu_ij2k(1, i)) == (1, i) for i in r)
     @test all(triu_k2ij(triu_ij2k(i-1, i)) == (i-1, i) for i = r[2:end])
 end
+
+include("test_enumerated.jl")
