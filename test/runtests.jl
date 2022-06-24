@@ -29,6 +29,7 @@ end
     i9 = UpperTriangularIndices(9)
     iv = i9[3:23]
     SplittablesTesting.test_ordered([i1,i3,i9,iv])
+    SplittablesTesting.test_ordered(enumerate.([i1,i3,i9,iv]))
 end
 
 @testset "Extensive indexing tests" begin

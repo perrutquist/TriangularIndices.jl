@@ -1,7 +1,7 @@
 using TriangularIndices
 using Test
 
-@testset "Enumerated{UpperTriangularIndices}" begin
+@testset "OffsetEnumerate{UpperTriangularIndices}" begin
     iter = enumerate(UpperTriangularIndices(3))
     @test first(iter) == (1, (1,1))
     @test last(iter) == (6, (3,3))
