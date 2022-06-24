@@ -47,4 +47,4 @@ function SplittablesBase.halve(x::OffsetEnumerate)
     (OffsetEnumerate(x.offset, left), OffsetEnumerate(x.offset + length(left), right))
 end
 
-SplittablesBase.amount(x::OffsetEnumerate) = length(x)
+SplittablesBase.amount(x::OffsetEnumerate) = SplittablesBase.amount(x.itr)
