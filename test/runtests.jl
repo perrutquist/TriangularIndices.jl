@@ -15,13 +15,24 @@ using TriangularIndices: triu_ij2k, triu_k2ij
     @test collect(iter) == [(1, 1), (1, 2), (2, 2), (1, 3), (2, 3), (3, 3)]
     @test collect(iter[2:end-1]) == [(1, 2), (2, 2), (1, 3), (2, 3)]
     @test [iter[i] for i in 1:6] == collect(iter)
-    @test iter[4] === UpperTriangularIndices[4]
-    @test iter[2:5] === UpperTriangularIndices[2:5]
 
     iv = iter[2:5]
     civ = collect(iv)
     for i=1:3, j=1:3
         @test findfirst(==((i,j)), iv) === findfirst(==((i,j)), civ)
+    end
+end
+
+@testset "AllUpperTriangularIndices" begin
+    aui = TriangularIndices.AllUpperTriangularIndices()
+    nui = UpperTriangularIndices(4)
+
+    @test UpperTriangularIndices() === aui
+    @test aui[4] === nui[4]
+    @test aui[2:5] === nui[2:5]
+    @test aui[Base.OneTo(7)] === nui[Base.OneTo(7)]
+    for (a,n) in zip(aui, nui)
+        @test a == n
     end
 end
 

@@ -12,9 +12,9 @@ export UpperTriangularIndices
 
 `UpperTriangleIndices(A)` where `A` is a square matrix yields an iterator fitting the size of `A`.
 
-`UpperTriangleIndices[r]` is the same as `UpperTriangleIndices(n)[r]` for a sufficiently large `n`
+`UpperTriangleIndices()` returns an "infinite" set, which behaves as `UpperTriangleIndices(n)` for a sufficiently large `n`
 
-Indexing operations involve square roots, so are slightly slower than iteration.
+Both iteration and `getindex` are supported, but indexing operations involve square roots, so are slightly slower than iteration.
 
 Note: The implementation may change in future releases. Code that uses the fields of this struct directly is likely to break.
 """
@@ -22,8 +22,12 @@ struct UpperTriangularIndices
     start::Tuple{Int, Int}
     stop::Tuple{Int, Int}
 end
-
 # NOTE, because too (i,j) larger than typemax(Int32) will cause Int64 overflow in k, we could use Int32 for (i,j).
+
+"""
+AllUpperTriangularIndices is an iterator of all the UpperTriangularIndicies, starting at (1,1) and ending when there is integer overflow.
+"""
+struct AllUpperTriangularIndices end
 
 function UpperTriangularIndices(n::Int) 
     Int===Int32 && n > 65535 && throw(ArgumentError("UpperTriangularIndices with a side-length longer than 65535 are currently not supported with 32bit Int."))
@@ -36,6 +40,10 @@ function UpperTriangularIndices(A::AbstractMatrix)
     ==(size(A)...) || error("Triangular indices requires a square matrix.")
     UpperTriangularIndices(size(A,1))
 end
+
+UpperTriangularIndices() = AllUpperTriangularIndices()
+
+const UTI = Union{UpperTriangularIndices, AllUpperTriangularIndices}
 
 """
 The index of `(i,j)` in a sufficiently large `UpperTriangleIndices` iterator that starts from `(1,1)`.
@@ -73,6 +81,7 @@ If `i < j`, then `i` is incremented, otherwise `j` is incremented and `i` resets
 @inline triu_next(t::Tuple{Int, Int}) = triu_next(t...)
 
 Base.first(x::UpperTriangularIndices) = x.start
+Base.first(::AllUpperTriangularIndices) = (1,1)
 
 Base.last(x::UpperTriangularIndices) = x.stop
 
@@ -83,12 +92,23 @@ function Base.findfirst(ij::Union{Base.Fix2{typeof(isequal),Tuple{Int,Int}},Base
     triu_ij2k(i, j) - triu_ij2k(x.start) + 1
 end
 
+function Base.findfirst(ij::Union{Base.Fix2{typeof(isequal),Tuple{Int,Int}},Base.Fix2{typeof(==),Tuple{Int,Int}}}, ::AllUpperTriangularIndices)
+    (i,j) = ij.x
+    0 < i ≤ j || return nothing
+    reverse(x.start) <= (j, i) <= reverse(x.stop) || return nothing
+    triu_ij2k(i, j)
+end
+
 @inline function Base.iterate(x::UpperTriangularIndices, state=x.start)
     reverse(state) > reverse(x.stop) && return nothing
     (state, triu_next(state))
 end
 
-Base.IteratorSize(::Type{UpperTriangularIndices}) = Base.HasShape{1}()
+@inline function Base.iterate(::AllUpperTriangularIndices, state=(1,1))
+    (state, triu_next(state))
+end
+
+Base.IteratorSize(::Type{UTI}) = Base.HasShape{1}()
 
 Base.length(x::UpperTriangularIndices) = triu_ij2k(last(x)) - triu_ij2k(first(x)) + 1
 
@@ -96,28 +116,24 @@ Base.size(x::UpperTriangularIndices) = (length(x), )
 
 Base.size(x::UpperTriangularIndices, dim) = dim == 1 ? length(x) : 1
 
-Base.IteratorEltype(::Type{UpperTriangularIndices}) = Base.HasEltype()
+Base.IteratorEltype(::Type{UTI}) = Base.HasEltype()
 
-Base.eltype(::Type{UpperTriangularIndices}) = Tuple{Int,Int}
+Base.eltype(::Type{UTI}) = Tuple{Int,Int}
 
 Base.getindex(x::UpperTriangularIndices, k::Integer) = triu_k2ij(k - triu_ij2k(first(x)) + 1)
 
-function Base.getindex(x::UpperTriangularIndices, r::UnitRange{<:Integer})
+Base.getindex(::AllUpperTriangularIndices, k::Integer) = triu_k2ij(k)
+
+function Base.getindex(x::UpperTriangularIndices, r::AbstractUnitRange{<:Integer})
     k0 = triu_ij2k(first(x)) - 1
     UpperTriangularIndices(triu_k2ij(first(r) + k0), triu_k2ij(last(r) + k0))
 end
 
-Base.getindex(::Type{UpperTriangularIndices}, i::Int) = triu_k2ij(i)
+Base.getindex(::AllUpperTriangularIndices, r::AbstractUnitRange{<:Integer}) = UpperTriangularIndices(triu_k2ij(first(r)), triu_k2ij(last(r)))
 
-Base.getindex(::Type{UpperTriangularIndices}, r::UnitRange) = UpperTriangularIndices(triu_k2ij(first(r)), triu_k2ij(last(r)))
+Base.view(x::UTI, r::UnitRange{<:Integer}) = getindex(x, r)
 
-Base.getindex(::Type{UpperTriangularIndices}, r::Base.OneTo) = UpperTriangularIndices((1,1), triu_k2ij(last(r)))
-
-Base.view(x::UpperTriangularIndices, r::UnitRange{<:Integer}) = getindex(x, r)
-
-Base.view(x::Type{UpperTriangularIndices}, r::UnitRange{<:Integer}) = getindex(x, r)
-
-Base.firstindex(x::UpperTriangularIndices) = 1
+Base.firstindex(x::UTI) = 1
 
 Base.lastindex(x::UpperTriangularIndices) = length(x)
 
