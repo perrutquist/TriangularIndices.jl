@@ -15,6 +15,8 @@ using TriangularIndices: triu_ij2k, triu_k2ij
     @test collect(iter) == [(1, 1), (1, 2), (2, 2), (1, 3), (2, 3), (3, 3)]
     @test collect(iter[2:end-1]) == [(1, 2), (2, 2), (1, 3), (2, 3)]
     @test [iter[i] for i in 1:6] == collect(iter)
+    @test iter[4] === UpperTriangularIndices[4]
+    @test iter[2:5] === UpperTriangularIndices[2:5]
 
     iv = iter[2:5]
     civ = collect(iv)

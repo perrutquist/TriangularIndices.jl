@@ -12,6 +12,8 @@ export UpperTriangularIndices
 
 `UpperTriangleIndices(A)` where `A` is a square matrix yields an iterator fitting the size of `A`.
 
+`UpperTriangleIndices[r]` is the same as `UpperTriangleIndices(n)[r]` for a sufficiently large `n`
+
 Indexing operations involve square roots, so are slightly slower than iteration.
 
 Note: The implementation may change in future releases. Code that uses the fields of this struct directly is likely to break.
@@ -105,7 +107,15 @@ function Base.getindex(x::UpperTriangularIndices, r::UnitRange{<:Integer})
     UpperTriangularIndices(triu_k2ij(first(r) + k0), triu_k2ij(last(r) + k0))
 end
 
+Base.getindex(::Type{UpperTriangularIndices}, i::Int) = triu_k2ij(i)
+
+Base.getindex(::Type{UpperTriangularIndices}, r::UnitRange) = UpperTriangularIndices(triu_k2ij(first(r)), triu_k2ij(last(r)))
+
+Base.getindex(::Type{UpperTriangularIndices}, r::Base.OneTo) = UpperTriangularIndices((1,1), triu_k2ij(last(r)))
+
 Base.view(x::UpperTriangularIndices, r::UnitRange{<:Integer}) = getindex(x, r)
+
+Base.view(x::Type{UpperTriangularIndices}, r::UnitRange{<:Integer}) = getindex(x, r)
 
 Base.firstindex(x::UpperTriangularIndices) = 1
 
