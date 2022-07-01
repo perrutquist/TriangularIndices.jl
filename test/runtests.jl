@@ -34,6 +34,9 @@ end
     for (a,n) in zip(aui, nui)
         @test a == n
     end
+    for i=1:3, j=1:3
+        @test findfirst(==((i,j)), aui) === findfirst(==((i,j)), nui)
+    end
 end
 
 @testset "Splittables - UpperTriangularIndices" begin

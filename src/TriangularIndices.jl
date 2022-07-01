@@ -95,7 +95,6 @@ end
 function Base.findfirst(ij::Union{Base.Fix2{typeof(isequal),Tuple{Int,Int}},Base.Fix2{typeof(==),Tuple{Int,Int}}}, ::AllUpperTriangularIndices)
     (i,j) = ij.x
     0 < i ≤ j || return nothing
-    reverse(x.start) <= (j, i) <= reverse(x.stop) || return nothing
     triu_ij2k(i, j)
 end
 
